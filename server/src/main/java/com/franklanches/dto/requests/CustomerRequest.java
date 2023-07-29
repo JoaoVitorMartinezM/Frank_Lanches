@@ -1,16 +1,18 @@
 package com.franklanches.dto.requests;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 
 public record CustomerRequest(
-        @NotNull(message = "Nome não pode ser nulo")
+        @NotBlank(message = "{field.required}")
         String name,
-        @NotNull(message = "Telefone não pode ser nulo")
+        @NotBlank(message = "{field.required}")
         String phone,
-        @NotNull(message = "CEP não pode ser nulo")
+        @NotNull(message = "{field.required}")
         Long cep,
-        @NotNull(message = "Número da casa não pode ser nulo")
+        @NotBlank(message = "{field.required}")
         String number
 ) {
 }

@@ -10,6 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+@CrossOrigin
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/customer")
@@ -18,7 +19,7 @@ public class CustomerController {
     private final CustomerService service;
 
 
-    @CrossOrigin
+
     @PostMapping
     public ResponseEntity<Boolean> register(@RequestBody @Valid CustomerRequest request){
         URI uri = UriComponentsBuilder.fromUriString("http://localhost:8080").path("api/customer").build().toUri();
