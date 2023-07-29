@@ -2,9 +2,10 @@ package com.franklanches.dto.requests;
 
 import jakarta.validation.constraints.NotNull;
 
+
 public record CustomerRequest(
         @NotNull(message = "Nome não pode ser nulo")
-        String nome,
+        String name,
         @NotNull(message = "Telefone não pode ser nulo")
         String phone,
         @NotNull(message = "CEP não pode ser nulo")
