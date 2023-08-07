@@ -1,12 +1,19 @@
 package com.franklanches.dto.responses;
 
 
+import com.fasterxml.jackson.databind.annotation.EnumNaming;
 import com.franklanches.models.Payment;
 import com.franklanches.models.Status;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.util.List;
 
 @Data
@@ -14,13 +21,17 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDto {
 
+    @NotBlank(message = "{field.required}")
     private String customerId;
 
-    private List<Long> productsIds;
+    @NotNull(message = "{field.required}")
+    private List<String> salesItemId;
 
+    @NotNull(message = "{field.required}")
     private Payment payment;
 
+    @NotNull(message = "{field.required}")
     private Status status;
 
-    private String details;
+    private Double total;
 }

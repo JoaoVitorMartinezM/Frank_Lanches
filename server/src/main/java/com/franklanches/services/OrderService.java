@@ -1,20 +1,25 @@
 package com.franklanches.services;
 
 
+import com.franklanches.dto.requests.SalesItemDto;
 import com.franklanches.dto.responses.OrderDto;
+import com.franklanches.dto.responses.SalesItemResponse;
 import com.franklanches.exceptions.ResourceNotFoundException;
 import com.franklanches.models.Customer;
 import com.franklanches.models.Order;
-import com.franklanches.models.Product;
+import com.franklanches.models.SalesItem;
 import com.franklanches.repositories.CustomerRepository;
 import com.franklanches.repositories.OrderRepository;
 import com.franklanches.repositories.ProductRepository;
+import com.franklanches.repositories.SalesItemRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -24,6 +29,7 @@ public class OrderService {
     private final OrderRepository repository;
     private final ProductRepository productRepository;
     private final CustomerRepository customerRepository;
+    private final SalesItemRepository salesItemRepository;
     private final ModelMapper mapper;
 
     public List<OrderDto> getRequests(){
@@ -45,19 +51,35 @@ public class OrderService {
 
     public OrderDto placeOrder(OrderDto request) {
 
-        Customer customer = customerRepository.findById(request.getCustomerId()).get();
+        Customer customer = customerRepository.findById(request.getCustomerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente", request.getCustomerId()));
 
-        Product product = productRepository.findById(request.getProductsIds().get(0)).get();
+        List<SalesItem> salesItems = request.getSalesItemId().stream().map(item -> salesItemRepository.findById(item).get()).toList();
+
+        Double total = salesItems.stream().mapToDouble(item -> (item.getQuantity() * item.getProduct().getPrice())).sum();
 
         Order order = mapper.map(request, Order.class);
-
-        order.getProducts().add(product);
+        order.setTotal(total);
+        order.setSalesItems(salesItems);
         order.setCustomer(customer);
-
         order = repository.save(order);
 
         OrderDto dto = mapper.map(order, OrderDto.class);
 
+        return dto;
+    }
+
+    @Transactional
+    public SalesItemResponse placeSalesItem(SalesItemDto request) {
+        if(!productRepository.existsById(request.getProductId()))
+            throw new ResourceNotFoundException("Produto", request.getProductId().toString());
+
+        SalesItem model = mapper.map(request, SalesItem.class);
+        model.setProduct(productRepository.getReferenceById(request.getProductId()));
+        model.setId(UUID.randomUUID().toString());
+        salesItemRepository.save(model);
+
+        SalesItemResponse dto = mapper.map(model, SalesItemResponse.class);
         return dto;
     }
 }

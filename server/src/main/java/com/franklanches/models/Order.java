@@ -24,7 +24,7 @@ public class Order {
     private Customer customer;
 
     @ManyToMany
-    private List<Product> products;
+    private List<SalesItem> salesItems;
 
     @Enumerated(EnumType.STRING)
     private Payment payment;
@@ -32,6 +32,6 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    private String details;
+    private Double total;
 
 }
