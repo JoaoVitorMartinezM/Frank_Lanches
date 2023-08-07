@@ -3,6 +3,7 @@ package com.franklanches.services;
 
 import com.franklanches.dto.requests.CustomerRequest;
 import com.franklanches.exceptions.CepNotExistsException;
+import com.franklanches.exceptions.ResourceNotFoundException;
 import com.franklanches.models.Customer;
 import com.franklanches.repositories.CustomerRepository;
 import com.gtbr.ViaCepClient;
@@ -36,4 +37,12 @@ public class CustomerService {
 
         return Boolean.TRUE;
     }
+
+    public Customer getCustomerById(String customerId) {
+        if (!repository.existsById(customerId))
+            throw new ResourceNotFoundException("Cliente", customerId);
+        return repository.findById(customerId).get();
+    }
+
+
 }
