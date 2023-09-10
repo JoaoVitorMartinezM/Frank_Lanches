@@ -3,6 +3,7 @@ package com.franklanches.services;
 
 import com.franklanches.dto.requests.SalesItemDto;
 import com.franklanches.dto.responses.OrderDto;
+import com.franklanches.dto.responses.OrdersResponse;
 import com.franklanches.dto.responses.SalesItemResponse;
 import com.franklanches.exceptions.ResourceNotFoundException;
 import com.franklanches.models.Customer;
@@ -49,7 +50,7 @@ public class OrderService {
         return dto;
     }
 
-    public OrderDto placeOrder(OrderDto request) {
+    public OrdersResponse placeOrder(OrderDto request) {
 
         Customer customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente", request.getCustomerId()));
@@ -64,7 +65,7 @@ public class OrderService {
         order.setCustomer(customer);
         order = repository.save(order);
 
-        OrderDto dto = mapper.map(order, OrderDto.class);
+        OrdersResponse dto = mapper.map(order, OrdersResponse.class);
 
         return dto;
     }

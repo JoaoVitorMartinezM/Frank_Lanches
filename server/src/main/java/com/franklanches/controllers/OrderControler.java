@@ -2,6 +2,7 @@ package com.franklanches.controllers;
 
 import com.franklanches.dto.requests.SalesItemDto;
 import com.franklanches.dto.responses.OrderDto;
+import com.franklanches.dto.responses.OrdersResponse;
 import com.franklanches.dto.responses.SalesItemResponse;
 import com.franklanches.models.SalesItem;
 import com.franklanches.services.OrderService;
@@ -37,7 +38,7 @@ public class OrderControler {
     }
 
     @PostMapping
-    public ResponseEntity<OrderDto> registerOrder(@RequestBody @Valid OrderDto request){
+    public ResponseEntity<OrdersResponse> registerOrder(@RequestBody @Valid OrderDto request){
         return ResponseEntity.ok(service.placeOrder(request));
     }
 
