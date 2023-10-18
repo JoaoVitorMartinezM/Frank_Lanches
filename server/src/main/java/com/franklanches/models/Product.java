@@ -23,7 +23,7 @@ public class Product {
 
     private String description;
 
-    private Float price;
+    private Double price;
 
     @Pattern(regexp = "^(http|https)://(.*)", message = "Url inválida")
     private String imageUrl;

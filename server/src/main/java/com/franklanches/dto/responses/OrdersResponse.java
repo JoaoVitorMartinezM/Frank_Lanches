@@ -17,9 +17,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
+//Alterar para não devolver o customer model inteiro
 public class OrdersResponse {
     @NotBlank(message = "{field.required}")
-    private Customer customer;
+    private String customerId;
 
     @NotNull(message = "{field.required}")
     private List<SalesItem> salesItems;

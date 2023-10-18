@@ -9,7 +9,7 @@ public record ProductWithObservations(
         @NotBlank(message = "{field.required}")
         String description,
         @NotBlank(message = "{field.required}")
-        Float price,
+        Double price,
         @NotBlank(message = "{field.required}")
         @Pattern(regexp = "^(http|https)://(.*)")
         String imageUrl,

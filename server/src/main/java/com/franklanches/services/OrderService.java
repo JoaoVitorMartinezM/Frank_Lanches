@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,29 +34,39 @@ public class OrderService {
     private final SalesItemRepository salesItemRepository;
     private final ModelMapper mapper;
 
+    @Transactional
     public List<OrderDto> getRequests(){
-        List<Order> orders = repository.findAll();
-        List<OrderDto> requestsDto = orders.stream()
-                .map(order -> mapper.map(order, OrderDto.class))
-                .collect(Collectors.toList());
+//        List<Order> orders = repository.findAll();
+//        List<String> dtoList = new ArrayList<>();
+//        List<OrderDto> requestsDto = orders.stream()
+//                .map(order -> repository.getSalesItems(order.getId()))
+//                .map(order -> mapper.map(order, OrderDto.class))
+//                .collect(Collectors.toList());
+//
+////        requestsDto.stream().map(orderDto -> orderDto.setSalesItemIds())
 
-        return requestsDto;
+        return null;
     }
-    
+
+    @Transactional
     public OrderDto getRequestByID(Long id){
         if (!repository.existsById(id))
             throw new ResourceNotFoundException("Pedido", id.toString());
-        Optional<Order> opt = repository.findById(id);
-        OrderDto dto = mapper.map(opt, OrderDto.class);
+        Order order = repository.findById(id).get();
+        List<String> dtoList = new ArrayList<>();
+        order.getSalesItems().forEach(salesItem -> dtoList.add(salesItem.getId()));
+
+        OrderDto dto = OrderDto.builder().payment(order.getPayment()).status(order.getStatus()).total(order.getTotal()).customerId(order.getCustomer().getPhone()).salesItemIds(dtoList).build();
         return dto;
     }
 
+    @Transactional
     public OrdersResponse placeOrder(OrderDto request) {
 
         Customer customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente", request.getCustomerId()));
 
-        List<SalesItem> salesItems = request.getSalesItemId().stream().map(item -> salesItemRepository.findById(item).get()).toList();
+        List<SalesItem> salesItems = request.getSalesItemIds().stream().map(item -> salesItemRepository.findById(item).get()).toList();
 
         Double total = salesItems.stream().mapToDouble(item -> (item.getQuantity() * item.getProduct().getPrice())).sum();
 
@@ -66,6 +77,7 @@ public class OrderService {
         order = repository.save(order);
 
         OrdersResponse dto = mapper.map(order, OrdersResponse.class);
+        dto.setCustomerId(customer.getPhone());
 
         return dto;
     }

@@ -15,7 +15,7 @@ public class ProductRequest {
     private String description;
 
     //        @NotNull(message = "{field.required}")
-    private Float price;
+    private Double price;
     @NotBlank(message = "{field.required}")
     private String imageUrl;
 }

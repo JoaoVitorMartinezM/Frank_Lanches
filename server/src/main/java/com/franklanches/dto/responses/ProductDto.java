@@ -13,7 +13,7 @@ public class ProductDto {
 
     private String description;
 
-    private Float price;
+    private Double price;
 
     private String imageUrl;
 }

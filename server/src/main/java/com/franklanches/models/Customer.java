@@ -31,7 +31,7 @@ public class  Customer {
 
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     private List<Address> addresses;
 
 
